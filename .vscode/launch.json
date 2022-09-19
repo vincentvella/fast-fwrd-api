@@ -5,11 +5,12 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "envFile": "${workspaceFolder}/.env",
       "name": "Launch Package",
       "type": "go",
       "request": "launch",
       "mode": "auto",
-      "program": "${fileDirname}"
+      "program": "${workspaceFolder}/cmd/fast-fwrd-api"
     }
   ]
 }

@@ -1,10 +1,12 @@
-module fast-fwd-api
+module github.com/vincentvella/fast-fwrd-api
 
 go 1.19
 
-require github.com/gocraft/work v0.5.1
+require github.com/nedpals/supabase-go v0.2.0
 
 require (
-	github.com/gomodule/redigo v1.8.9 // indirect
-	github.com/robfig/cron v1.2.0 // indirect
+	github.com/google/go-querystring v1.1.0 // indirect
+	github.com/nedpals/postgrest-go v0.1.2 // indirect
 )
+
+require github.com/adierkens/expo-server-sdk-go v0.0.0-20170919061145-aee51a0c2266
