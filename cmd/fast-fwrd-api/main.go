@@ -2,8 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+	"os"
 	"time"
 
+	"github.com/julienschmidt/httprouter"
 	"github.com/vincentvella/fast-fwrd-api/pkg/notification"
 	"github.com/vincentvella/fast-fwrd-api/pkg/supabase"
 )
@@ -41,9 +45,29 @@ func PollForFasts() {
 	}
 }
 
+
+func Status(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	fmt.Fprint(w, "Ok")
+}
+
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+			return value
+	}
+	return fallback
+}
+
 func main() {
 	// supabase.GetFasts()
-	PollForFasts()
+	// Start background poll
+	go PollForFasts()
+
+	// Start server
+	router := httprouter.New()
+	router.GET("/status", Status)
+	port := getEnv("PORT", "8080")
+
+	log.Fatal(http.ListenAndServe(":" + port, router))
 }
 
 
