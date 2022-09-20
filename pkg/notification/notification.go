@@ -21,7 +21,7 @@ func SendNotification(userId string) {
 		for _, v := range deviceIds {
 			m := expo.NewExpoPushMessage()
 			
-			m.To = v["id"].(string) // Your expo push token
+			m.To = v["device_id"].(string) // Your expo push token
 			m.Title = "It's Fasting Time!" // The title of the notification
 			m.Body = "Testing a push" // The body of the notification
 			
