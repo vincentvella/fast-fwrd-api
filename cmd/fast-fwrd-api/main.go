@@ -36,12 +36,17 @@ func runPoll(now time.Time, ch chan struct{}) {
 }
 
 func PollForFasts() {
-	wait := make(chan struct{})
+	ticker := time.NewTicker(5 * time.Second)
+	quit := make(chan struct{})
 	for {
-			time.Sleep(1 * time.Second)
+		select {
+		case <-ticker.C:
 			now := time.Now()
-			go runPoll(now, wait)
-			<-wait
+			go runPoll(now, quit)
+		case <-quit:
+			ticker.Stop()
+			return	
+		}
 	}
 }
 
