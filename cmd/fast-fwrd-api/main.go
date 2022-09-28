@@ -39,16 +39,19 @@ func runPoll(now time.Time, ch chan struct{}) {
 
 func PollForFasts() {
 	ticker := time.NewTicker(1 * time.Second)
+	// TODO: catch within poll to quit polling?
 	quit := make(chan struct{})
+	
 	for {
-		select {
-		case <-ticker.C:
-			now := time.Now()
-			go runPoll(now, quit)
-		case <-quit:
-			ticker.Stop()
-			return	
-		}
+			select {
+			case <-quit:
+				fmt.Println("Stopped")
+				ticker.Stop()
+				return
+			case t := <-ticker.C:
+				c := make(chan struct{})
+				go runPoll(t, c)
+			}
 	}
 }
 
