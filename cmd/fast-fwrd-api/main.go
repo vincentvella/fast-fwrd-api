@@ -12,13 +12,12 @@ import (
 	"github.com/vincentvella/fast-fwrd-api/pkg/supabase"
 )
 
-func getFasts(now time.Time) []map[string]interface{} {
+
+func getFasts(now time.Time) ([]map[string]interface{}, []map[string]interface{}) {
 	// Create timestamp used to query supabase
-	timestamp := fmt.Sprintf("%d-%02d-%02d %02d:%02d:%02d",
-		now.Year(), now.Month(), now.Day(),
-		now.Hour(), now.Minute(), now.Second())
+	timestamp := fmt.Sprintf("%02d:%02d:%02d", now.Hour(), now.Minute(), now.Second()) 
 	fmt.Println(timestamp)
-	return supabase.GetFastsAt(timestamp)
+	return supabase.GetFastsAt(timestamp, "start_at"), supabase.GetFastsAt(timestamp, "finish_at")
 }
 
 func notifyUser(fasts []map[string]interface{}) {
@@ -28,9 +27,12 @@ func notifyUser(fasts []map[string]interface{}) {
 }
 
 func runPoll(now time.Time, ch chan struct{}) {
-	fasts := getFasts(now)
-	if len(fasts) > 0 {
-		notifyUser(fasts)
+	fastsStarting, fastsEnding := getFasts(now)
+	if len(fastsEnding) > 0 {
+		notifyUser(fastsEnding)
+	}
+	if len(fastsStarting) > 0 {
+		notifyUser(fastsStarting)
 	}
 	ch <- struct{}{}
 }

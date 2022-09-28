@@ -41,9 +41,9 @@ func GetFasts() [](map[string]interface{}) {
 	return results
 }
 
-func GetFastsAt(timestamp string) [](map[string]interface{}) {
+func GetFastsAt(timestamp string, status string) [](map[string]interface{}) {
 	var results [](map[string]interface{})
-	err := supabaseClient.DB.From("fasts").Select("*").Eq("ends_at", timestamp).Execute(&results)
+	err := supabaseClient.DB.From("fasts").Select("*").Eq(status, timestamp).Execute(&results)
 	fmt.Println(results)
 	if err != nil {
 		fmt.Println(fmt.Errorf(err.Error()))
