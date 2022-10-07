@@ -32,7 +32,7 @@ func GetUserDevices(userId string) [](map[string]interface{}) {
 
 func GetFasts() [](map[string]interface{}) {
 	var results [](map[string]interface{})
-	err := supabaseClient.DB.From("fasts").Select("*").Execute(&results)
+	err := supabaseClient.DB.From("plans").Select("*").Execute(&results)
 	fmt.Println(results)
 	if err != nil {
 		fmt.Println(fmt.Errorf(err.Error()))
@@ -43,7 +43,7 @@ func GetFasts() [](map[string]interface{}) {
 
 func GetFastsAt(timestamp string, status string) [](map[string]interface{}) {
 	var results [](map[string]interface{})
-	err := supabaseClient.DB.From("fasts").Select("*").Eq(status, timestamp).Execute(&results)
+	err := supabaseClient.DB.From("plans").Select("*").Eq(status, timestamp).Execute(&results)
 	fmt.Println(results)
 	if err != nil {
 		fmt.Println(fmt.Errorf(err.Error()))
