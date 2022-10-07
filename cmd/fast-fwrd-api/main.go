@@ -20,19 +20,24 @@ func getFasts(now time.Time) ([]map[string]interface{}, []map[string]interface{}
 	return supabase.GetFastsAt(timestamp, "start_at"), supabase.GetFastsAt(timestamp, "finish_at")
 }
 
-func notifyUser(fasts []map[string]interface{}) {
+func notifyUserFastEnd(fasts []map[string]interface{}) {
 	for _, fast := range fasts {
-		notification.SendNotification(fast["uid"].(string))
+		notification.SendNotification(fast["uid"].(string), notification.SendPlannedEndNotification)
+	}
+}
+func notifyUserFastStart(fasts []map[string]interface{}) {
+	for _, fast := range fasts {
+		notification.SendNotification(fast["uid"].(string), notification.SendPlannedStartNotification)
 	}
 }
 
 func runPoll(now time.Time, ch chan struct{}) {
 	fastsStarting, fastsEnding := getFasts(now)
 	if len(fastsEnding) > 0 {
-		notifyUser(fastsEnding)
+		notifyUserFastEnd(fastsEnding)
 	}
 	if len(fastsStarting) > 0 {
-		notifyUser(fastsStarting)
+		notifyUserFastStart(fastsStarting)
 	}
 	ch <- struct{}{}
 }

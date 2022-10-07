@@ -7,7 +7,10 @@ import (
 	"github.com/vincentvella/fast-fwrd-api/pkg/supabase"
 )
 
-func SendNotification(userId string) {
+type setPushData func(*expo.ExpoPushMessage) *expo.ExpoPushMessage
+
+
+func SendNotification(userId string, setter setPushData) {
 	
 	fmt.Println("sending notification to user", userId)
 
@@ -20,12 +23,10 @@ func SendNotification(userId string) {
 		
 		for _, v := range deviceIds {
 			m := expo.NewExpoPushMessage()
-			
 			m.To = v["device_id"].(string) // Your expo push token
-			m.Title = "It's Fasting Time!" // The title of the notification
-			m.Body = "Testing a push" // The body of the notification
-			
-			notifications = append(notifications, m)
+			var message = setter(m)
+
+			notifications = append(notifications, message)
 		}
 		
 		response, err := client.SendPushNotifications(notifications)
@@ -34,4 +35,16 @@ func SendNotification(userId string) {
 		}
 		fmt.Println(response)
 	}
+}
+
+func SendPlannedStartNotification(message *expo.ExpoPushMessage) *expo.ExpoPushMessage {
+	message.Title = "Time to Start Fasting!" // The title of the notification
+	message.Body = "Be sure to log your last meal" // The body of the notification	
+	return message
+}
+
+func SendPlannedEndNotification(message *expo.ExpoPushMessage) *expo.ExpoPushMessage {
+	message.Title = "Time to Eat!" // The title of the notification
+	message.Body = "Be sure to log when you begin eating" // The body of the notification	
+	return message
 }
